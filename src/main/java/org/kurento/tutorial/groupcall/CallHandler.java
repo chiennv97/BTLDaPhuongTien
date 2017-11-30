@@ -59,7 +59,7 @@ public class CallHandler extends TextWebSocketHandler {
     private HashMap<String, HashSet> listDisable = new HashMap<String, HashSet>();
     private HashMap<String, WebSocketSession> tempSession = new HashMap<String, WebSocketSession>();
     private ArrayList<String> listOnline = new ArrayList<String>();
-    private ArrayList<WebSocketSession> listSession = new ArrayList<WebSocketSession>();
+    private HashMap<String,WebSocketSession> listSession = new HashMap<String,WebSocketSession>();
 
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
@@ -75,8 +75,10 @@ public class CallHandler extends TextWebSocketHandler {
 
         switch (jsonMessage.get("id").getAsString()) {
             case "login":
-                listOnline.add(jsonMessage.get("name").getAsString());
-                listSession.add(session);
+                String userName = jsonMessage.get("name").getAsString();
+                listOnline.add(userName);
+                listSession.put(userName, session);
+                System.out.println("add session");
 //                JsonArray listOnlineArrMsg = new JsonArray();
 //                JsonArray listRoomArrMsg = new JsonArray();
 
@@ -273,11 +275,19 @@ public class CallHandler extends TextWebSocketHandler {
                 JsonObject listOnlineMsg = new JsonObject();
                 listOnlineMsg.addProperty("id","getListOnline" );
                 listOnlineMsg.add("listOnline", listOnlineArrMsg);
-                for(WebSocketSession asession:listSession ){
-                    sendMsg(asession, listOnlineMsg);
+//                for(WebSocketSession asession:listSession ){
+//                    sendMsg(asession, listOnlineMsg);
+//                }
+                String requester4 = jsonMessage.get("requester").getAsString();
+                for(String nameSession : listSession.keySet() ){
+                    if(!nameSession.equals(requester4)){
+                        sendMsg(listSession.get(nameSession),listOnlineMsg);
+                    }
                 }
+                sendMsg(listSession.get(requester4),listOnlineMsg);
                 break;
             case "getListRoom":
+
                 JsonArray listRoomArrMsg = new JsonArray();
                 for(String abc: roomManager.getRooms().keySet()){
                     listRoomArrMsg.add(abc);
@@ -285,9 +295,13 @@ public class CallHandler extends TextWebSocketHandler {
                 JsonObject listRoomMsg = new JsonObject();
                 listRoomMsg.addProperty("id","getListRoom" );
                 listRoomMsg.add("listRoom", listRoomArrMsg);
-                for(WebSocketSession asession:listSession ){
-                    sendMsg(asession, listRoomMsg);
+                String requester3 = jsonMessage.get("requester").getAsString();
+                for(String nameSession : listSession.keySet() ){
+                    if(!nameSession.equals(requester3)){
+                        sendMsg(listSession.get(nameSession),listRoomMsg);
+                    }
                 }
+                sendMsg(listSession.get(requester3),listRoomMsg);
 
                 break;
             case "getHostOfRoom":

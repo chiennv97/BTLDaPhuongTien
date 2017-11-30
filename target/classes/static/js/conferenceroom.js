@@ -253,10 +253,12 @@ function onExistingParticipants(msg) {
 		audio : true,
 		video : {
 			mandatory : {
+//				chromeMediaSource : 'desktop',
 				maxWidth : 320,
 				maxFrameRate : 15,
 				minFrameRate : 15
-			}
+			},
+//            mediaSource: 'window' || 'screen'
 		}
 	};
 	console.log(name + " registered in room " + room);
@@ -390,7 +392,8 @@ function nameButton(){
 //new function
 function getListOnline(){
     sendMessage({
-           	id : 'getListOnline'
+           	id : 'getListOnline',
+           	requester: name
     });
 }
 
@@ -401,7 +404,8 @@ function cancel(userJoin){
 //new function
 function getListRoom(){
     sendMessage({
-       	id : 'getListRoom'
+       	id : 'getListRoom',
+       	requester: name
     });
 }
 
