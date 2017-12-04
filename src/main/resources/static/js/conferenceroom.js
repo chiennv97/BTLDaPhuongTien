@@ -214,6 +214,29 @@ function call() {
     document.getElementById('join').style.display = 'block';
 
 }
+function liveshare() {
+    document.getElementById('home').style.display = 'none';
+    document.getElementById('index').style.display = 'none';
+    document.getElementById('call').style.display = 'none';
+    document.getElementById('join').style.display = 'none';
+    document.getElementById('joinShare').style.display = 'block';
+    getScreenId(function (error, sourceId, screen_constraints) {
+    			navigator.getUserMedia = navigator.mozGetUserMedia || navigator.webkitGetUserMedia;
+    			navigator.getUserMedia(screen_constraints, function (stream) {
+    				document.querySelector('video').src = URL.createObjectURL(stream);
+    				console.log("stream");
+    				console.log(stream);
+    				sendMessage({
+    					id : 'demo',
+    					url: URL.createObjectURL(stream)
+    				});
+    				console.log("log tai day");
+    				console.log(name);
+    			}, function (error) {
+    				console.error(error);
+    			});
+    });
+}
 
 function wall() {
     alert("Chuc nang dang phat trien !!!");
@@ -250,15 +273,18 @@ function callResponse(message) {
 
 function onExistingParticipants(msg) {
 	var constraints = {
-		audio : true,
+		audio : false,
 		video : {
 			mandatory : {
-//				chromeMediaSource : 'desktop',
 				maxWidth : 320,
 				maxFrameRate : 15,
 				minFrameRate : 15
-			},
+//				chromeMediaSource: 'screen',
+//                maxWidth: window.screen.width > 1920 ? window.screen.width : 1920,
+//                maxHeight: window.screen.height > 1080 ? window.screen.height : 1080
+			}
 //            mediaSource: 'window' || 'screen'
+//            optional: []
 		}
 	};
 	console.log(name + " registered in room " + room);

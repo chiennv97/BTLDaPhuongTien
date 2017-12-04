@@ -311,6 +311,10 @@ public class CallHandler extends TextWebSocketHandler {
                 hostOfRoomMsg.addProperty("hostOfRoom", hostOfRoomMsgString);
                 user.sendMessage(hostOfRoomMsg);
                 break;
+            case "demo":
+                System.out.println("da in ra demo");
+                jsonMessage.get("url").getAsString();
+                break;
             default:
                 break;
         }
