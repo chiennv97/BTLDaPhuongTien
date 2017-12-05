@@ -20,7 +20,7 @@ body {
 	font: 13px/20px "Lucida Grande", Tahoma, Verdana, sans-serif;
 	color: #404040;
 	background-color: #0ca3d2;
-    margin: 0; height: 76%;
+    margin: 0;
     /*background-image: url("/vendor/imgs/gnome.jpg");*/
 }
 
@@ -261,12 +261,7 @@ input[type=text]:focus, input[type=password]:focus {
 	background-repeat: no-repeat;
 	background-size: 150px 50px;
 }
-.login{
-	/*border: 1px solid #a9a9a9;*/
-	border:none;
-	margin-top: 180px;
-	margin-bottom: 280px;
-}
+
 .btn{
 	background-color: #4ea7ff;
 }
@@ -285,10 +280,7 @@ input[type=text]:focus, input[type=password]:focus {
 	color: white;
 	text-align: center;
 }
-.calllist{
-	display: none;
 
-}
 .calllist hr{
 	margin-top: 0px;
 	margin-bottom: 0px;
@@ -296,20 +288,11 @@ input[type=text]:focus, input[type=password]:focus {
 .smallcalllist{
 	margin-bottom: 30px;
 }
-.person{
-		width: 100%;
-		height: 50px;
-		border-bottom: 1px solid #ccc;
-		padding-top: 5px;
-		padding-bottom: 1px;
-}
+
 .person:last-child{
 	border-bottom: none;
 }
-.nameperson{
-	padding-top: 10px;
-	position: absolute;
-}
+
 .state{
 	position: relative;
 	display: inline-block;
@@ -327,12 +310,9 @@ input[type=text]:focus, input[type=password]:focus {
     padding-top: 25px;
     padding-bottom: 25px;
 }
-
-.avatar{
-	width: 40px;
-	height :40px;
-}
-
+/*img{
+	border-radius: 50%	;
+}*/
 a:hover{
 	cursor: pointer;
 }
@@ -362,8 +342,7 @@ input.btn-start, input.btn-stop{
 @media (min-width: 768px){
 	.login{
 		border: 1px dashed #a9a9a9;
-		margin-top: 224px;
-		margin-bottom: 200px;
+		margin-top: 100px;
 		padding-top: 25px;
 		padding-bottom: 50px;
 	}
@@ -372,24 +351,30 @@ input.btn-start, input.btn-stop{
 	}
 	.calllist{
 		display: inline-block;
-		width: 100%;
-		/*height: 200px;*/
+		width: 250px;
 		border: 1px solid #ccc;
-		padding-bottom: 20px;
 	}
-	/*.person{
-		width: 100%;
-		height: 50px;
+	.person{
+		width: 250px;
+		height: 62px;
 		border-bottom: 1px solid #ccc;
-	}*/
+	}
 	.nameperson{
-		padding-top: 13px;
-		/*padding-left: 40px;*/
-		text-align: left;
+		position: absolute;
+        width: 170px;
+        padding-top: 20px;
+        padding-left: 10px;
+        padding-right: 10px;
+		text-align: center;
 	}
 	.nameperson a{
 		padding-left: 20px;
 	}
+
+    .avatar {
+        width: 50px;
+        padding-top: 6px;
+    }
 
 	.btn-stop{
 		margin: 10px 0px 0px 25px;
@@ -464,6 +449,10 @@ div.content{
 
 #participants{
     height: 100%;
+    display:table;
+    width:auto;
+    position:relative;
+    width:100%;
 }
 
 .navbar{
@@ -474,13 +463,40 @@ div.content{
     text-align: center;
 }
 
-.joinlist {
-    border-bottom-width: 0px;
-    border-top-width: 0px;
-    padding-bottom: 0px;
+.callimg{
+    width: 50px;
 }
 
-.callimg {
-    width: 50px;
-    height: 45px;
+.footer{
+    position: absolute!important;
+}
+
+#joinShare{
+ /*position:absolute!important;*/
+ /*bottom: 80px !important;*/
+}
+
+.container-fluid::after{
+    contain: "";
+    clear: both;
+    display:table;
+}
+
+h4 {
+    width: 250px;
+}
+
+.playpause {
+    background-image:url(http://png-4.findicons.com/files/icons/2315/default_icon/256/media_play_pause_resume.png);
+    background-repeat:no-repeat;
+    width:50%;
+    height:50%;
+    position:absolute;
+    left:0%;
+    right:0%;
+    top:0%;
+    bottom:0%;
+    margin:auto;
+    background-size:contain;
+    background-position: center;
 }

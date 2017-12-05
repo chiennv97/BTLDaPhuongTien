@@ -15,7 +15,7 @@
 </head>
 <body>
 
-	<div id="wrap" style="margin: 0px 0px 0px 0px; padding: 0px 0px 0px 0px;">
+	<div class="container-fluid">
 		<div style="min-height:500px">
 
 
@@ -98,7 +98,9 @@
 			<!-- main content -->
 			<div class="container-fluid text-center" style="margin-top:80px">
 				<!-- left -->
-				<div class="col-xs-12 col-sm-8 col-lg-9 text-right room">
+				<div class="col-xs-12 col-sm-8 col-lg-9 text-right">
+					<div class="room"></div>
+					<div class="roomnew"></div>
 
 				</div>
 
@@ -197,7 +199,9 @@
 				<!-- left -->
 				<div class="col-xs-12 col-sm-8 col-lg-9 text-right" style="padding:0px 50px 0px 50px;">
 					<div><h2 class="col-xs-12 col-sm-12 col-md-12" id="room-header"></h2></div>
-					<div id="participants"></div>
+					<div id="participants">
+						<div class="playpause"></div>
+					</div>
 				</div>
 
 				<!-- right -->
@@ -223,8 +227,6 @@
 		</div>
 		<div id="joinShare">
 			<script src="js/getScreenId.js"></script>
-
-			<video controls autoplay></video>
 		</div>
 		 <!--footer-->
 		<div class="col-sm-12 footer">

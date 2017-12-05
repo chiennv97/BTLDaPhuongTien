@@ -60,6 +60,7 @@ public class CallHandler extends TextWebSocketHandler {
     private HashMap<String, WebSocketSession> tempSession = new HashMap<String, WebSocketSession>();
     private ArrayList<String> listOnline = new ArrayList<String>();
     private HashMap<String,WebSocketSession> listSession = new HashMap<String,WebSocketSession>();
+    private HashMap<String,String> listShareScreen = new HashMap<String, String>(0);
 
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
@@ -311,9 +312,30 @@ public class CallHandler extends TextWebSocketHandler {
                 hostOfRoomMsg.addProperty("hostOfRoom", hostOfRoomMsgString);
                 user.sendMessage(hostOfRoomMsg);
                 break;
-            case "demo":
+            case "shareScreenRoom":
+                String shareScreenRoomer = jsonMessage.get("roomer").getAsString();
+                String shareScreenUrl = jsonMessage.get("url").getAsString();
+                listShareScreen.put(shareScreenRoomer,shareScreenUrl);
                 System.out.println("da in ra demo");
-                jsonMessage.get("url").getAsString();
+//                JsonObject shareScreenRoomMsg = new JsonObject();
+//                shareScreenRoomMsg.addProperty("id","ShareScreenRoom");
+//                shareScreenRoomMsg.addProperty("roomer",shareScreenRoomer);
+//                for(String listShare : listSession.keySet()){
+////                    if(!listShare.equals(shareScreenRoomer)){
+//                    sendMsg(listSession.get(listShare),shareScreenRoomMsg);
+////                    }
+//                }
+                break;
+            case "getShareScreenRoom":
+                JsonArray shareScreenRoomArrMsg = new JsonArray();
+                for(String listShare : listShareScreen.keySet()){
+                    shareScreenRoomArrMsg.add(listShare);
+                }
+                JsonObject getShareScreenRoomMsg = new JsonObject();
+                getShareScreenRoomMsg.addProperty("id","getShareScreenRoom" );
+                getShareScreenRoomMsg.add("listShare", shareScreenRoomArrMsg);
+                String requester5 = jsonMessage.get("requester").getAsString();
+                sendMsg(listSession.get(requester5),getShareScreenRoomMsg);
                 break;
             default:
                 break;

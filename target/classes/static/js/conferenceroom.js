@@ -149,7 +149,7 @@ ws.onmessage = function(message) {
          $(document).ready(function(){
             $('.room').empty();
             for(i = 0; i < listRoom.length; i++) {
-                $('.room').append('<div class="col-xs-12 col-sm-6 col-md-4"><div class="panel panel-primary"><div class="panel-body"><img src="/vendor/imgs/doraemon.jpg" height="240" width="240"></div><div class="panel-footer"><a>'+listRoom[i]+'</a></div></div></div>');
+                $('.room').append('<div class="col-xs-12 col-sm-6 col-md-4"><div class="panel panel-primary"><div class="panel-body"><img src="/vendor/imgs/doraemon.jpg" height="240" width="240"></div><div class="panel-footer"><a>Call Room'+listRoom[i]+'</a></div></div></div>');
             }
          });
     	 break;
@@ -159,6 +159,25 @@ ws.onmessage = function(message) {
         console.log("host of room");
         console.log(hostOfRoom);
         document.getElementById('boss').innerText = "Boss's Room: " + hostOfRoom; // ten boss room
+        break;
+    case 'shareScreenRoom':
+        shareScreenRoomer = parsedMessage.roomer
+        $(document).ready(function(){
+             $('.roomnew').empty();
+             $('.roomnew').append('<div class="col-xs-12 col-sm-6 col-md-4"><div class="panel panel-primary"><div class="panel-body"><img src="/vendor/imgs/doraemon.jpg" height="240" width="240"></div><div class="panel-footer"><a>Share Screen Room'+shareScreenRoomer+'</a></div></div></div>');
+        });
+        break;
+    case 'getShareScreenRoom':
+        shareScreenRoomerNew = parsedMessage.listShare
+        $(document).ready(function(){
+              $('.roomnew').empty();
+              if(shareScreenRoomerNew.length != 0){
+                    for(i = 0; i < shareScreenRoomerNew.length; i++) {
+                               $('.roomnew').append('<div class="col-xs-12 col-sm-6 col-md-4"><div class="panel panel-primary"><div class="panel-body"><img src="/vendor/imgs/doraemon.jpg" height="240" width="240"></div><div class="panel-footer"><a>Share Screen Room'+shareScreenRoomerNew[i]+'</a></div></div></div>');
+                    }
+              }
+
+        });
         break;
 	default:
 	    console.log("default");
@@ -178,6 +197,7 @@ function login(){
     sendMessage(message);
     getListOnline();
     getListRoom();
+    getListShareScreen();
 }
 function register() {
 //	name = document.getElementById('name').value;
@@ -220,6 +240,9 @@ function liveshare() {
     document.getElementById('call').style.display = 'none';
     document.getElementById('join').style.display = 'none';
     document.getElementById('joinShare').style.display = 'block';
+    $(document).ready(function(){
+        $('#joinShare').append('<video controls autoplay></video>');
+    });
     getScreenId(function (error, sourceId, screen_constraints) {
     			navigator.getUserMedia = navigator.mozGetUserMedia || navigator.webkitGetUserMedia;
     			navigator.getUserMedia(screen_constraints, function (stream) {
@@ -227,11 +250,10 @@ function liveshare() {
     				console.log("stream");
     				console.log(stream);
     				sendMessage({
-    					id : 'demo',
-    					url: URL.createObjectURL(stream)
+    					id : 'shareScreenRoom',
+    					url: URL.createObjectURL(stream),
+    					roomer: name
     				});
-    				console.log("log tai day");
-    				console.log(name);
     			}, function (error) {
     				console.error(error);
     			});
@@ -432,6 +454,12 @@ function getListRoom(){
     sendMessage({
        	id : 'getListRoom',
        	requester: name
+    });
+}
+function getListShareScreen(){
+    sendMessage({
+        id : 'getShareScreenRoom',
+        requester: name
     });
 }
 
