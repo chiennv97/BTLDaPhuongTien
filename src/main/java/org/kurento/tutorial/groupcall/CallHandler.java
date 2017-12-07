@@ -120,6 +120,15 @@ public class CallHandler extends TextWebSocketHandler {
                 }
 
                 break;
+            case "joinShareRoom":
+                String nameShareRoom = jsonMessage.get("room").getAsString();
+                String joinShareName = jsonMessage.get("name").getAsString();
+//                Room roomShare = roomManager.getRoom(nameShareRoom);
+                joinShareRoom(jsonMessage,session);
+                break;
+            case "viewShareRoom":
+                viewShareRoom(jsonMessage,session);
+                break;
             case "receiveVideoFrom":
                 final String senderName = jsonMessage.get("sender").getAsString();
                 final UserSession sender = registry.getByName(senderName);
@@ -312,31 +321,6 @@ public class CallHandler extends TextWebSocketHandler {
                 hostOfRoomMsg.addProperty("hostOfRoom", hostOfRoomMsgString);
                 user.sendMessage(hostOfRoomMsg);
                 break;
-            case "shareScreenRoom":
-                String shareScreenRoomer = jsonMessage.get("roomer").getAsString();
-                String shareScreenUrl = jsonMessage.get("url").getAsString();
-                listShareScreen.put(shareScreenRoomer,shareScreenUrl);
-                System.out.println("da in ra demo");
-//                JsonObject shareScreenRoomMsg = new JsonObject();
-//                shareScreenRoomMsg.addProperty("id","ShareScreenRoom");
-//                shareScreenRoomMsg.addProperty("roomer",shareScreenRoomer);
-//                for(String listShare : listSession.keySet()){
-////                    if(!listShare.equals(shareScreenRoomer)){
-//                    sendMsg(listSession.get(listShare),shareScreenRoomMsg);
-////                    }
-//                }
-                break;
-            case "getShareScreenRoom":
-                JsonArray shareScreenRoomArrMsg = new JsonArray();
-                for(String listShare : listShareScreen.keySet()){
-                    shareScreenRoomArrMsg.add(listShare);
-                }
-                JsonObject getShareScreenRoomMsg = new JsonObject();
-                getShareScreenRoomMsg.addProperty("id","getShareScreenRoom" );
-                getShareScreenRoomMsg.add("listShare", shareScreenRoomArrMsg);
-                String requester5 = jsonMessage.get("requester").getAsString();
-                sendMsg(listSession.get(requester5),getShareScreenRoomMsg);
-                break;
             default:
                 break;
         }
@@ -349,11 +333,11 @@ public class CallHandler extends TextWebSocketHandler {
     }
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        UserSession user = registry.removeBySession(session);
-        Room room = roomManager.getRoom(user.getRoomName());
-        if (room != null) {
-//      room.leave(user);
-        }
+//        UserSession user = registry.removeBySession(session);
+//        Room room = roomManager.getRoom(user.getRoomName());
+//        if (room != null) {
+////      room.leave(user);
+//        }
     }
 
     private void joinRoom(JsonObject params, WebSocketSession session) throws IOException {
@@ -381,7 +365,20 @@ public class CallHandler extends TextWebSocketHandler {
 //      users.get(name).disableAudio(sender);
 //    }
     }
-
+    private void joinShareRoom(JsonObject params, WebSocketSession session) throws IOException{
+        final String roomName = params.get("room").getAsString();
+        final String name = params.get("name").getAsString();
+        Room room = roomManager.getRoomAndHost(roomName, name);
+        final UserSession user = room.joinShare(name, session);
+        registry.register(user);
+    }
+    private void viewShareRoom(JsonObject params, WebSocketSession session) throws IOException{
+        final String roomName = params.get("room").getAsString();
+        final String name = params.get("name").getAsString();
+        Room room = roomManager.getRoomAndHost(roomName, name);
+        final UserSession user = room.viewShare(name, session);
+        registry.register(user);
+    }
     private void leaveRoom(UserSession user, String leaver) throws IOException {
         final Room room = roomManager.getRoom(user.getRoomName());
         room.leave(user);

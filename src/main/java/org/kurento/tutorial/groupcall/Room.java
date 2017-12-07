@@ -46,6 +46,7 @@ public class Room implements Closeable {
   private final Logger log = LoggerFactory.getLogger(Room.class);
 
   private final ConcurrentMap<String, UserSession> participants = new ConcurrentHashMap<>();
+  private UserSession participantShareScreen;
   private final MediaPipeline pipeline;
   private final String name;
   private final String hostRoom;
@@ -69,18 +70,38 @@ public class Room implements Closeable {
   public UserSession join(String userName, WebSocketSession session) throws IOException {
     log.info("ROOM {}: adding participant {}", userName, userName);
     final UserSession participant = new UserSession(userName, this.name, session, this.pipeline);
+    //
     joinRoom(participant);
     participants.put(participant.getName(), participant);
+    //
     sendParticipantNames(participant);
     return participant;
   }
-
+  public UserSession joinShare(String userName, WebSocketSession session) throws IOException {
+    final UserSession participant = new UserSession(userName, this.name, session, this.pipeline);
+//    joinRoom(participant);
+    participantShareScreen = participant;
+    sendOverview(participant);
+    return participant;
+  }
+  public UserSession viewShare(String userName, WebSocketSession session) throws IOException {
+    final UserSession participant = new UserSession(userName, this.name, session, this.pipeline);
+//    joinRoom(participant);
+    final JsonArray participantsArray = new JsonArray();
+    JsonElement participantName = new JsonPrimitive(participantShareScreen.getName());
+    participantsArray.add(participantName);
+    final JsonObject viewShareMsg = new JsonObject();
+    viewShareMsg.addProperty("id", "viewShare");
+    viewShareMsg.add("data", participantsArray);
+    participant.sendMessage(viewShareMsg);
+    return participant;
+  }
   public void leave(UserSession user) throws IOException {
     log.debug("PARTICIPANT {}: Leaving room {}", user.getName(), this.name);
     this.removeParticipant(user.getName());
     user.close();
   }
-
+  //
   private Collection<String> joinRoom(UserSession newParticipant) throws IOException {
     final JsonObject newParticipantMsg = new JsonObject();
     newParticipantMsg.addProperty("id", "newParticipantArrived");
@@ -126,7 +147,16 @@ public class Room implements Closeable {
     }
 
   }
-
+  public void sendOverview(UserSession user) throws IOException{
+    final JsonObject existingParticipantsMsg = new JsonObject();
+    existingParticipantsMsg.addProperty("id", "sendOverview");
+    user.sendMessage(existingParticipantsMsg);
+    JsonObject hostOfRoomMsg = new JsonObject();
+    hostOfRoomMsg.addProperty("id", "getHostOfRoom");
+    hostOfRoomMsg.addProperty("hostOfRoom", hostRoom);
+    user.sendMessage(hostOfRoomMsg);
+  }
+  //gui request cho client gui len video
   public void sendParticipantNames(UserSession user) throws IOException {
 
     final JsonArray participantsArray = new JsonArray();

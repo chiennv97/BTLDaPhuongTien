@@ -26,7 +26,7 @@ const PARTICIPANT_CLASS = 'participant';
  *                        The tag of the new element will be 'video<name>'
  * @return
  */
-function Participant(name) {
+function Participant(name, idAppend) {
 	this.name = name;
 	var sound = true;
 	var container = document.createElement('div');
@@ -34,15 +34,18 @@ function Participant(name) {
 	container.id = name;
 	var span = document.createElement('span');
 	var video = document.createElement('video');
+	var div = document.createElement('div');
 	var rtcPeer;
 
 	container.appendChild(video);
 	container.appendChild(span);
+	container.appendChild(div);
 	container.onclick = switchContainerClass;
-	document.getElementById('participants').appendChild(container);
+	document.getElementById(idAppend).appendChild(container);
 
 	span.appendChild(document.createTextNode(name));
 
+    div.id = 'playpause';
 	video.id = 'video-' + name;
 	video.autoplay = true;
 	video.controls = false;

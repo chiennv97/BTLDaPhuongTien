@@ -21,6 +21,7 @@ var name;
 var room;
 var joinUser;
 var joinRoom;
+var video;
 //new var
 var listOnline = 0;
 //new var
@@ -40,6 +41,12 @@ ws.onmessage = function(message) {
 	    console.log("existingParticipants");
 		onExistingParticipants(parsedMessage);
 		break;
+	case 'sendOverview':
+	    sendOverview();
+	    break;
+	case 'viewShare':
+	    parsedMessage.data.forEach(receiveVideo);
+	    break;
 	case 'newParticipantArrived':
 	    console.log("newParticipantArrived");
 		onNewParticipant(parsedMessage);
@@ -179,6 +186,17 @@ ws.onmessage = function(message) {
 
         });
         break;
+    case 'acceptJoinShareRoom':
+        document.getElementById('index').style.display = 'none';
+        document.getElementById('join').style.display = 'none';
+        document.getElementById('call').style.display = 'none';
+        document.getElementById('home').style.display = 'none';
+        document.getElementById('viewShare').style.display = 'block';
+        $(document).ready(function(){
+             $('#viewShare').empty();
+             $('#viewShare').append('<video controls autoplay src="'+parsedMessage.room+'"></video>')
+        });
+        break;
 	default:
 	    console.log("default");
 		console.error('Unrecognized message', parsedMessage);
@@ -197,7 +215,7 @@ function login(){
     sendMessage(message);
     getListOnline();
     getListRoom();
-    getListShareScreen();
+//    getListShareScreen();
 }
 function register() {
 //	name = document.getElementById('name').value;
@@ -219,7 +237,28 @@ function register() {
 //	getHostOfRoom();
     getListRoom();
 }
-
+function registerShare(){
+    console.log("registerShare");
+    room = document.getElementById('roomShareName').value;
+    document.getElementById('joinShare').style.display = 'none';
+    document.getElementById('viewShare').style.display = 'block';
+    sendMessage({
+          id : 'joinShareRoom',
+          name: name,
+          room: room
+    });
+}
+function viewShare(){
+    console.log("viewShare");
+    room = document.getElementById('roomShareName').value;
+        document.getElementById('joinShare').style.display = 'none';
+        document.getElementById('viewShare').style.display = 'block';
+        sendMessage({
+              id : 'viewShareRoom',
+              name: name,
+              room: room
+        });
+}
 function home() {
     document.getElementById('call').style.display = 'none';
     document.getElementById('index').style.display = 'none';
@@ -240,24 +279,6 @@ function liveshare() {
     document.getElementById('call').style.display = 'none';
     document.getElementById('join').style.display = 'none';
     document.getElementById('joinShare').style.display = 'block';
-    $(document).ready(function(){
-        $('#joinShare').append('<video controls autoplay></video>');
-    });
-    getScreenId(function (error, sourceId, screen_constraints) {
-    			navigator.getUserMedia = navigator.mozGetUserMedia || navigator.webkitGetUserMedia;
-    			navigator.getUserMedia(screen_constraints, function (stream) {
-    				document.querySelector('video').src = URL.createObjectURL(stream);
-    				console.log("stream");
-    				console.log(stream);
-    				sendMessage({
-    					id : 'shareScreenRoom',
-    					url: URL.createObjectURL(stream),
-    					roomer: name
-    				});
-    			}, function (error) {
-    				console.error(error);
-    			});
-    });
 }
 
 function wall() {
@@ -293,15 +314,48 @@ function callResponse(message) {
 	}
 }
 
+function sendOverview(){
+    var constraints = {
+    		audio : false,
+    		video : {
+    			mandatory : {
+    //				maxWidth : 320,
+    //				maxFrameRate : 15,
+    //				minFrameRate : 15
+    				chromeMediaSource: 'screen'
+    //                maxWidth: window.screen.width > 1920 ? window.screen.width : 1920,
+    //                maxHeight: window.screen.height > 1080 ? window.screen.height : 1080
+    			}
+    		}
+    	};
+    	console.log(name + " registered in room " + room);
+    	var participant = new Participant(name, 'overview');
+    	participants[name] = participant;
+    	video = participant.getVideoElement();
+
+    	var options = {
+    	      localVideo: video,
+    	      mediaConstraints: constraints,
+    	      onicecandidate: participant.onIceCandidate.bind(participant)
+    	    }
+    	participant.rtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerSendonly(options,
+    		function (error) {
+    		  if(error) {
+    			  return console.error(error);
+    		  }
+    		  this.generateOffer (participant.offerToReceiveVideo.bind(participant));
+    	});
+}
+//gui video len
 function onExistingParticipants(msg) {
 	var constraints = {
 		audio : false,
 		video : {
 			mandatory : {
-				maxWidth : 320,
-				maxFrameRate : 15,
-				minFrameRate : 15
-//				chromeMediaSource: 'screen',
+//				maxWidth : 320,
+//				maxFrameRate : 15,
+//				minFrameRate : 15
+				chromeMediaSource: 'screen'
 //                maxWidth: window.screen.width > 1920 ? window.screen.width : 1920,
 //                maxHeight: window.screen.height > 1080 ? window.screen.height : 1080
 			}
@@ -310,9 +364,9 @@ function onExistingParticipants(msg) {
 		}
 	};
 	console.log(name + " registered in room " + room);
-	var participant = new Participant(name);
+	var participant = new Participant(name, 'participants');
 	participants[name] = participant;
-	var video = participant.getVideoElement();
+	video = participant.getVideoElement();
 
 	var options = {
 	      localVideo: video,
@@ -403,7 +457,7 @@ function acceptJoin(userJoin){
 }
 
 function receiveVideo(sender) {
-	var participant = new Participant(sender);
+	var participant = new Participant(sender,'overview');
 	participants[sender] = participant;
 	var video = participant.getVideoElement();
 
@@ -456,10 +510,7 @@ function getListRoom(){
        	requester: name
     });
 }
-function getListShareScreen(){
-    sendMessage({
-        id : 'getShareScreenRoom',
-        requester: name
-    });
-}
+
+
+
 
