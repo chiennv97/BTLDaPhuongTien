@@ -1,19 +1,4 @@
-/*
- * (C) Copyright 2014 Kurento (http://kurento.org/)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+
 
 var ws = new WebSocket('wss://' + location.host + '/groupcall');
 var participants = {};
@@ -90,12 +75,6 @@ ws.onmessage = function(message) {
                 }
             }
 	    }
-//        participants[parsedMessage.user].
-//        participants[parsedMessage.user].dispose();
-
-//        document.getElementById('join').style.display = 'block';
-//        document.getElementById('room').style.display = 'none';
-//        ws.close();
 	    break;
 	case 'permisson':
 	    console.log("you haven't permisson");
@@ -264,6 +243,8 @@ function home() {
     document.getElementById('index').style.display = 'none';
     document.getElementById('join').style.display = 'none';
     document.getElementById('home').style.display = 'block';
+    getListOnline();
+    getListRoom();
 }
 
 function call() {
@@ -294,7 +275,7 @@ function loginAlert() {
 }
 
 function onNewParticipant(request) {
-	receiveVideo(request.name);
+	receiveVideoNew(request.name);
 }
 
 function receiveVideoResponse(result) {
@@ -319,17 +300,12 @@ function sendOverview(){
     		audio : false,
     		video : {
     			mandatory : {
-    //				maxWidth : 320,
-    //				maxFrameRate : 15,
-    //				minFrameRate : 15
     				chromeMediaSource: 'screen'
-    //                maxWidth: window.screen.width > 1920 ? window.screen.width : 1920,
-    //                maxHeight: window.screen.height > 1080 ? window.screen.height : 1080
     			}
     		}
     	};
     	console.log(name + " registered in room " + room);
-    	var participant = new Participant(name, 'overview');
+    	var participant = new View(name, 'overview');
     	participants[name] = participant;
     	video = participant.getVideoElement();
 
@@ -349,18 +325,13 @@ function sendOverview(){
 //gui video len
 function onExistingParticipants(msg) {
 	var constraints = {
-		audio : false,
+		audio : true,
 		video : {
 			mandatory : {
-//				maxWidth : 320,
-//				maxFrameRate : 15,
-//				minFrameRate : 15
-				chromeMediaSource: 'screen'
-//                maxWidth: window.screen.width > 1920 ? window.screen.width : 1920,
-//                maxHeight: window.screen.height > 1080 ? window.screen.height : 1080
+				maxWidth : 320,
+				maxFrameRate : 15,
+				minFrameRate : 15
 			}
-//            mediaSource: 'window' || 'screen'
-//            optional: []
 		}
 	};
 	console.log(name + " registered in room " + room);
@@ -381,7 +352,7 @@ function onExistingParticipants(msg) {
 		  this.generateOffer (participant.offerToReceiveVideo.bind(participant));
 	});
 
-	msg.data.forEach(receiveVideo);
+	msg.data.forEach(receiveVideoNew);
 }
 
 function leaveRoom() {
@@ -395,14 +366,6 @@ function leaveRoom() {
 	});
     getListRoom();
 
-//	for ( var key in participants) {
-//		participants[key].dispose();
-//	}
-//
-//	document.getElementById('join').style.display = 'block';
-//	document.getElementById('room').style.display = 'none';
-
-//	ws.close();
 }
 function disableSound(){
 //
@@ -433,17 +396,6 @@ function disableSound(){
 
 
 }
-//function disableVideo(){
-////    console.log("day la log ......");
-////    console.log(name);
-//    x = document.getElementsByClassName('participant main');
-//    c = x[0].id;
-//    console.log(c);
-//    sendMessage({
-//    	id : 'disableVideo',
-//    	disabler: c
-//    });
-//}
 
 function acceptJoin(userJoin){
 
@@ -457,7 +409,25 @@ function acceptJoin(userJoin){
 }
 
 function receiveVideo(sender) {
-	var participant = new Participant(sender,'overview');
+	var participant = new View(sender,'overview');
+	participants[sender] = participant;
+	var video = participant.getVideoElement();
+
+	var options = {
+      remoteVideo: video,
+      onicecandidate: participant.onIceCandidate.bind(participant)
+    }
+
+	participant.rtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(options,
+			function (error) {
+			  if(error) {
+				  return console.error(error);
+			  }
+			  this.generateOffer (participant.offerToReceiveVideo.bind(participant));
+	});;
+}
+function receiveVideoNew(sender) {
+	var participant = new Participant(sender,'participants');
 	participants[sender] = participant;
 	var video = participant.getVideoElement();
 

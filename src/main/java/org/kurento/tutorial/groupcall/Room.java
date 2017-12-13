@@ -189,14 +189,14 @@ public class Room implements Closeable {
 
   @Override
   public void close() {
-    for (final UserSession user : participants.values()) {
-      try {
-        user.close();
-      } catch (IOException e) {
-        log.debug("ROOM {}: Could not invoke close on participant {}", this.name, user.getName(),
-            e);
-      }
-    }
+//    for (final UserSession user : participants.values()) {
+//      try {
+//        user.close();
+//      } catch (IOException e) {
+//        log.debug("ROOM {}: Could not invoke close on participant {}", this.name, user.getName(),
+//            e);
+//      }
+//    }
 
     participants.clear();
 

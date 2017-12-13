@@ -80,24 +80,6 @@ public class CallHandler extends TextWebSocketHandler {
                 listOnline.add(userName);
                 listSession.put(userName, session);
                 System.out.println("add session");
-//                JsonArray listOnlineArrMsg = new JsonArray();
-//                JsonArray listRoomArrMsg = new JsonArray();
-
-//                for(int i=0; i<listOnline.size();i++){
-//                    listOnlineArrMsg.add(listOnline.get(i));
-//                }
-//                for(String abc: roomManager.getRooms().keySet()){
-//                    listRoomArrMsg.add(abc);
-//                }
-//                JsonObject listMsg = new JsonObject();
-//                listMsg.addProperty("id","loginok" );
-//                listMsg.addProperty("listOnline", "d ");
-//                listMsg.add("listRoom", listRoomArrMsg);
-//                user.sendMessage(listMsg);
-//                JsonObject listRoomMsg = new JsonObject();
-//                listRoomMsg.addProperty("id","getListRoom" );
-//                listRoomMsg.add("listRoom", listRoomArrMsg);
-//                sendMsg(session, listMsg);
                 break;
             case "joinRoom":
                 String nameRoom = jsonMessage.get("room").getAsString();
@@ -383,7 +365,7 @@ public class CallHandler extends TextWebSocketHandler {
         final Room room = roomManager.getRoom(user.getRoomName());
         room.leave(user);
         if (room.getParticipants().isEmpty()) {
-            roomManager.removeRoom(room);
+//            roomManager.removeRoom(room);
             listDisable.remove(user.getRoomName());
         }
         listDisable.get(user.getRoomName()).remove(leaver);

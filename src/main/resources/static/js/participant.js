@@ -1,31 +1,8 @@
-/*
- * (C) Copyright 2014 Kurento (http://kurento.org/)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+
 
 const PARTICIPANT_MAIN_CLASS = 'participant main';
 const PARTICIPANT_CLASS = 'participant';
 
-/**
- * Creates a video element for a new participant
- *
- * @param {String} name - the name of the new participant, to be used as tag
- *                        name of the video element.
- *                        The tag of the new element will be 'video<name>'
- * @return
- */
 function Participant(name, idAppend) {
 	this.name = name;
 	var sound = true;
@@ -44,8 +21,9 @@ function Participant(name, idAppend) {
 	document.getElementById(idAppend).appendChild(container);
 
 	span.appendChild(document.createTextNode(name));
-
-    div.id = 'playpause';
+    this.uid = 'playpause-' + this.name;
+    div.id = this.uid;
+//    div.className = 'playpause';
 	video.id = 'video-' + name;
 	video.autoplay = true;
 	video.controls = false;
@@ -69,9 +47,11 @@ function Participant(name, idAppend) {
 				container.className = PARTICIPANT_MAIN_CLASS;
 				if(sound == true){
 				    document.getElementById('button-sound').value = "Disable Sound";
+				    document.getElementById(this.uid).removeAttribute("class");
 				}
 				if(sound == false){
 				    document.getElementById('button-sound').value = "Enable Sound";
+				     document.getElementById(this.uid).setAttribute("class", "playpause");
 				}
 			} else {
 			container.className = PARTICIPANT_CLASS;
@@ -120,21 +100,22 @@ function Participant(name, idAppend) {
 	    sound = soundset;
 	}
 	this.soundToggleEnable = function(){
+	    document.getElementById(this.uid).setAttribute("class", "playpause");
 	    mainclass = document.getElementsByClassName(PARTICIPANT_MAIN_CLASS);
         nameID = mainclass[0].id;
 	    if(nameID == this.name){
 	        document.getElementById('button-sound').value = "Enable Sound";
+
 	    }
+
 	}
 	this.soundToggleDisable = function(){
+	     document.getElementById(this.uid).removeAttribute("class");
     	 mainclass = document.getElementsByClassName(PARTICIPANT_MAIN_CLASS);
          nameID = mainclass[0].id;
     	 if(nameID == this.name){
     	     document.getElementById('button-sound').value = "Disable Sound";
     	 }
+
     }
-//	this.outOfRoom = function(outOfRoomName){
-//	    if(outOfRoomName == this.name){
-//	    }
-//	}
 }

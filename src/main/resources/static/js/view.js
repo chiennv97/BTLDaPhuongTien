@@ -1,13 +1,13 @@
 
 
-const PARTICIPANT_MAIN_CLASS = 'participant main';
-const PARTICIPANT_CLASS = 'participant';
+const VIEW_MAIN_CLASS = 'view main';
+const VIEW_CLASS = 'view';
 
-function Participant(name, idAppend) {
+function View(name, idAppend) {
 	this.name = name;
 	var sound = true;
 	var container = document.createElement('div');
-	container.className = isPresentMainParticipant() ? PARTICIPANT_CLASS : PARTICIPANT_MAIN_CLASS;
+	container.className = isPresentMainParticipant() ? VIEW_CLASS : VIEW_MAIN_CLASS;
 	container.id = name;
 	var span = document.createElement('span');
 	var video = document.createElement('video');
@@ -17,13 +17,11 @@ function Participant(name, idAppend) {
 	container.appendChild(video);
 	container.appendChild(span);
 	container.appendChild(div);
-	container.onclick = switchContainerClass;
 	document.getElementById(idAppend).appendChild(container);
 
 	span.appendChild(document.createTextNode(name));
-    this.uid = 'playpause-' + this.name;
-    div.id = this.uid;
-//    div.className = 'playpause';
+
+//    div.id = 'playpause';
 	video.id = 'video-' + name;
 	video.autoplay = true;
 	video.controls = false;
@@ -37,29 +35,9 @@ function Participant(name, idAppend) {
 		return video;
 	}
 
-	function switchContainerClass() {
-		if (container.className === PARTICIPANT_CLASS) {
-			var elements = Array.prototype.slice.call(document.getElementsByClassName(PARTICIPANT_MAIN_CLASS));
-			elements.forEach(function(item) {
-					item.className = PARTICIPANT_CLASS;
-				});
-
-				container.className = PARTICIPANT_MAIN_CLASS;
-				if(sound == true){
-				    document.getElementById('button-sound').value = "Disable Sound";
-				    document.getElementById(this.uid).removeAttribute("class");
-				}
-				if(sound == false){
-				    document.getElementById('button-sound').value = "Enable Sound";
-				     document.getElementById(this.uid).setAttribute("class", "playpause");
-				}
-			} else {
-			container.className = PARTICIPANT_CLASS;
-		}
-	}
 
 	function isPresentMainParticipant() {
-		return ((document.getElementsByClassName(PARTICIPANT_MAIN_CLASS)).length != 0);
+		return ((document.getElementsByClassName(VIEW_MAIN_CLASS)).length != 0);
 	}
 
 	this.offerToReceiveVideo = function(error, offerSdp, wp){
@@ -100,22 +78,21 @@ function Participant(name, idAppend) {
 	    sound = soundset;
 	}
 	this.soundToggleEnable = function(){
-	    document.getElementById(this.uid).setAttribute("class", "playpause");
-	    mainclass = document.getElementsByClassName(PARTICIPANT_MAIN_CLASS);
+	    mainclass = document.getElementsByClassName(VIEW_MAIN_CLASS);
         nameID = mainclass[0].id;
 	    if(nameID == this.name){
 	        document.getElementById('button-sound').value = "Enable Sound";
-
 	    }
-
 	}
 	this.soundToggleDisable = function(){
-	     document.getElementById(this.uid).removeAttribute("class");
-    	 mainclass = document.getElementsByClassName(PARTICIPANT_MAIN_CLASS);
+    	 mainclass = document.getElementsByClassName(VIEW_MAIN_CLASS);
          nameID = mainclass[0].id;
     	 if(nameID == this.name){
     	     document.getElementById('button-sound').value = "Disable Sound";
     	 }
-
     }
+//	this.outOfRoom = function(outOfRoomName){
+//	    if(outOfRoomName == this.name){
+//	    }
+//	}
 }

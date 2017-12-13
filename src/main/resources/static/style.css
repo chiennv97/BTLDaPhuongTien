@@ -249,6 +249,62 @@ input[type=text]:focus, input[type=password]:focus {
 	height: auto;
 }
 
+
+.view {
+	border-radius: 4px;
+	margin-left: 5;
+	margin-right: 5;
+	width: 25%;
+	text-align: center;
+	overflow: hide;
+	float: left;
+	padding: 5px;
+	border-radius: 10px;
+	-webkit-box-shadow: 0 0 200px rgba(255, 255, 255, 0.5), 0 1px 2px
+		rgba(0, 0, 0, 0.3);
+	box-shadow: 0 0 200px rgba(255, 255, 255, 0.5), 0 1px 2px
+		rgba(0, 0, 0, 0.3);
+
+	-webkit-transition: all 0.3s linear;
+	-moz-transition: all 0.3s linear;
+	-o-transition: all 0.3s linear;
+	transition: all 0.3s linear;
+}
+
+.view:before {
+	content: '';
+	position: absolute;
+	top: -8px;
+	right: -8px;
+	bottom: -8px;
+	left: -8px;
+	z-index: -1;
+	color: 696969;
+	border-radius: 4px;
+}
+
+.view:hover {
+	opacity: 1;
+	background-color: A9A9A9;
+	color: FFF8DC;
+	-webkit-transition: all 0.5s linear;
+	transition: all 0.5s linear;
+}
+
+.view video, .view.main video {
+	width: 100%; ! important;
+	height: auto;
+	!
+	important;
+}
+.view.main {
+	width: 100%;
+	margin: 0 auto;
+}
+
+.view.main video {
+	height: auto;
+}
 .navbar-custom{
 	background-color: #434242;
 	color: white;
@@ -486,12 +542,12 @@ h4 {
     width: 250px;
 }
 
-#playpause {
-    background-image:url(http://png-4.findicons.com/files/icons/2315/default_icon/256/media_play_pause_resume.png);
+.playpause {
+    background-image: url("./vendor/imgs/icon_disable_sound.png");
     background-repeat:no-repeat;
-    width:10%;
-    height:10%;
+    width:20%;
+    height:20%;
     position:absolute;
-    top:0%;
+    top:2%;
     background-size:contain;
 }
