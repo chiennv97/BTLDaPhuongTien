@@ -1,6 +1,6 @@
 
-
 var ws = new WebSocket('wss://' + location.host + '/groupcall');
+//da chuyen het cac bien
 var participants = {};
 var name;
 var room;
@@ -13,6 +13,7 @@ var listOnline = 0;
 var listRoom = 0;
 //new var
 var hostOfRoom;
+
 window.onbeforeunload = function() {
 	ws.close();
 };
@@ -55,25 +56,25 @@ ws.onmessage = function(message) {
 	    break;
 	case 'leave':
 	    if(parsedMessage.typeuser === "1"){
-    	    console.log("You had out of room");
-    	    for(var propName in participants) {
-                 if(propName != name){
-                     participants[propName].removeOut();
-                 }
-            }
+   	    console.log("You had out of room");
+   	    for(var propName in participants) {
+                if(propName != name){
+                    participants[propName].removeOut();
+                }
+           }
 	    }
 	    if(parsedMessage.typeuser === "0"){
 	        console.log("Duoi thanh cong");
 	    }
 	    if(parsedMessage.typeuser === "2"){
 	        console.log("Ban bi duoi khoi phong");
-            console.log(participants);
+           console.log(participants);
 //            participants["chiennv2"].dispose();
-            for(var propName in participants) {
-                if(propName != name){
-                    participants[propName].removeOut();
-                }
-            }
+           for(var propName in participants) {
+               if(propName != name){
+                   participants[propName].removeOut();
+               }
+           }
 	    }
 	    break;
 	case 'permisson':
@@ -86,7 +87,7 @@ ws.onmessage = function(message) {
 	    }
 	    if(parsedMessage.type == "enable"){
 	        participants[parsedMessage.user].setSound(true);
-            participants[parsedMessage.user].soundToggleDisable();
+           participants[parsedMessage.user].soundToggleDisable();
 	    }
 	    break;
 	case 'disableSound':
@@ -97,103 +98,105 @@ ws.onmessage = function(message) {
 	        console.log("ban bi tat tieng");
 	    }
 	    break;
-    case 'enableSound':
-        if(parsedMessage.type==0){
-   	        console.log("ban da bat tieng");
-  	    }
-        if(parsedMessage.type==1){
-            console.log("ban duoc bat tieng");
-        }
+   case 'enableSound':
+       if(parsedMessage.type==0){
+  	        console.log("ban da bat tieng");
+ 	    }
+       if(parsedMessage.type==1){
+           console.log("ban duoc bat tieng");
+       }
 	    break;
 	case 'requestJoin':
 	    console.log(parsedMessage.user + "yeu cau join");
 	    joinUser = parsedMessage.user;
-        joinRoom = parsedMessage.room;
-        var userJoin = joinUser;
+       joinRoom = parsedMessage.room;
+       var userJoin = joinUser;
 	    var parent = document.getElementById('msg');
 	    var newChild = '<div name="'+joinUser+'" class="card w-10 well"><div class="card-block"><h3 class="card-title">'+joinUser+' want talk with you</h3><div class="OkCe"><input type="button" class="btn btn-info" onmouseup="acceptJoin(\'' + userJoin + '\');" value="OK"><input type="button" class="btn btn-warning" onmouseup="cancel(\'' + userJoin + '\');" value="Cancel"></div></div></div>';
-        parent.insertAdjacentHTML('beforeend', newChild);
+       parent.insertAdjacentHTML('beforeend', newChild);
 	    break;
-	//new function
+	//da xong
 	case 'getListOnline':
-        listOnline = parsedMessage.listOnline;
-        var len = listOnline.length;
-        console.log("list online 0");
-        console.log(listOnline[0]);
-        $(document).ready(function(){
-          $('.calllist').empty();
-          for(i = 0; i < listOnline.length; i++) {
-                $('.calllist').append('<div class="person"><div class="col-xs-2 avatar"><img class="callimg" src="../vendor/imgs/anh-1.png"></div><div class="col-xs-10 nameperson"><a>'+listOnline[i]+'</a></div></div>');
-          }
-        });// in danh sach online
+       listOnline = parsedMessage.listOnline;
+       var len = listOnline.length;
+       console.log("list online 0");
+       console.log(listOnline[0]);
+       $(document).ready(function(){
+         $('.calllist').empty();
+         for(i = 0; i < listOnline.length; i++) {
+               $('.calllist').append('<div class="person"><div class="col-xs-2 avatar"><img class="callimg" src="../vendor/imgs/anh-1.png"></div><div class="col-xs-10 nameperson"><a>'+listOnline[i]+'</a></div></div>');
+         }
+       });// in danh sach online
 	    break;
 	//new function
 	case 'getListRoom':
-         listRoom = parsedMessage.listRoom;
-         console.log("list room");
-         console.log(listRoom);
-         $(document).ready(function(){
-            $('.room').empty();
-            for(i = 0; i < listRoom.length; i++) {
-                $('.room').append('<div class="col-xs-12 col-sm-6 col-md-4"><div class="panel panel-primary"><div class="panel-body"><img src="/vendor/imgs/doraemon.jpg" height="240" width="240"></div><div class="panel-footer"><a>Call Room'+listRoom[i]+'</a></div></div></div>');
-            }
-         });
-    	 break;
-    //new function
-    case 'getHostOfRoom':
-        hostOfRoom = parsedMessage.hostOfRoom;
-        console.log("host of room");
-        console.log(hostOfRoom);
-        document.getElementById('boss').innerText = "Boss's Room: " + hostOfRoom; // ten boss room
-        break;
-    case 'shareScreenRoom':
-        shareScreenRoomer = parsedMessage.roomer
+        listRoom = parsedMessage.listRoom;
+        console.log("list room");
+        console.log(listRoom);
         $(document).ready(function(){
+           $('.room').empty();
+           for(i = 0; i < listRoom.length; i++) {
+               $('.room').append('<div class="col-xs-12 col-sm-6 col-md-4"><div class="panel panel-primary"><div class="panel-body"><img src="/vendor/imgs/doraemon.jpg" height="240" width="240"></div><div class="panel-footer"><a>Call Room'+listRoom[i]+'</a></div></div></div>');
+           }
+        });
+   	 break;
+   //new function
+   case 'getHostOfRoom':
+       hostOfRoom = parsedMessage.hostOfRoom;
+       console.log("host of room");
+       console.log(hostOfRoom);
+       document.getElementById('boss').innerText = "Boss's Room: " + hostOfRoom; // ten boss room
+       break;
+   case 'shareScreenRoom':
+       shareScreenRoomer = parsedMessage.roomer
+       $(document).ready(function(){
+            $('.roomnew').empty();
+            $('.roomnew').append('<div class="col-xs-12 col-sm-6 col-md-4"><div class="panel panel-primary"><div class="panel-body"><img src="/vendor/imgs/doraemon.jpg" height="240" width="240"></div><div class="panel-footer"><a>Share Screen Room'+shareScreenRoomer+'</a></div></div></div>');
+       });
+       break;
+   case 'getShareScreenRoom':
+       shareScreenRoomerNew = parsedMessage.listShare
+       $(document).ready(function(){
              $('.roomnew').empty();
-             $('.roomnew').append('<div class="col-xs-12 col-sm-6 col-md-4"><div class="panel panel-primary"><div class="panel-body"><img src="/vendor/imgs/doraemon.jpg" height="240" width="240"></div><div class="panel-footer"><a>Share Screen Room'+shareScreenRoomer+'</a></div></div></div>');
-        });
-        break;
-    case 'getShareScreenRoom':
-        shareScreenRoomerNew = parsedMessage.listShare
-        $(document).ready(function(){
-              $('.roomnew').empty();
-              if(shareScreenRoomerNew.length != 0){
-                    for(i = 0; i < shareScreenRoomerNew.length; i++) {
-                               $('.roomnew').append('<div class="col-xs-12 col-sm-6 col-md-4"><div class="panel panel-primary"><div class="panel-body"><img src="/vendor/imgs/doraemon.jpg" height="240" width="240"></div><div class="panel-footer"><a>Share Screen Room'+shareScreenRoomerNew[i]+'</a></div></div></div>');
-                    }
-              }
+             if(shareScreenRoomerNew.length != 0){
+                   for(i = 0; i < shareScreenRoomerNew.length; i++) {
+                              $('.roomnew').append('<div class="col-xs-12 col-sm-6 col-md-4"><div class="panel panel-primary"><div class="panel-body"><img src="/vendor/imgs/doraemon.jpg" height="240" width="240"></div><div class="panel-footer"><a>Share Screen Room'+shareScreenRoomerNew[i]+'</a></div></div></div>');
+                   }
+             }
 
-        });
-        break;
-    case 'acceptJoinShareRoom':
-        document.getElementById('index').style.display = 'none';
-        document.getElementById('join').style.display = 'none';
-        document.getElementById('call').style.display = 'none';
-        document.getElementById('home').style.display = 'none';
-        document.getElementById('viewShare').style.display = 'block';
-        $(document).ready(function(){
-             $('#viewShare').empty();
-             $('#viewShare').append('<video controls autoplay src="'+parsedMessage.room+'"></video>')
-        });
-        break;
+       });
+       break;
+   case 'acceptJoinShareRoom':
+       document.getElementById('index').style.display = 'none';
+       document.getElementById('join').style.display = 'none';
+       document.getElementById('call').style.display = 'none';
+       document.getElementById('home').style.display = 'none';
+       document.getElementById('viewShare').style.display = 'block';
+       $(document).ready(function(){
+            $('#viewShare').empty();
+            $('#viewShare').append('<video controls autoplay src="'+parsedMessage.room+'"></video>')
+       });
+       break;
 	default:
 	    console.log("default");
 		console.error('Unrecognized message', parsedMessage);
 	}
 }
+//dang xu ly
 function login(){
-    name = document.getElementById('name').value;
-    document.getElementById('index').style.display = 'none';
-    document.getElementById('join').style.display = 'none';
-    document.getElementById('call').style.display = 'none';
-    document.getElementById('home').style.display = 'block';
-    var message = {
-        id: 'login',
-        name: name,
-    }
-    sendMessage(message);
-    getListOnline();
-    getListRoom();
+   name = document.getElementById('name').value;
+   document.getElementById('index').style.display = 'none';
+   document.getElementById('join').style.display = 'none';
+   document.getElementById('call').style.display = 'none';
+   document.getElementById('home').style.display = 'block';
+   var message = {
+       id: 'login',
+       name: name,
+   }
+   sendMessage(message);
+   getListOnline();
+   getListRoom();
+
 //    getListShareScreen();
 }
 function register() {
@@ -214,56 +217,56 @@ function register() {
 	}
 	sendMessage(message);
 //	getHostOfRoom();
-    getListRoom();
+   getListRoom();
 }
 function registerShare(){
-    console.log("registerShare");
-    room = document.getElementById('roomShareName').value;
-    document.getElementById('joinShare').style.display = 'none';
-    document.getElementById('viewShare').style.display = 'block';
-    sendMessage({
-          id : 'joinShareRoom',
-          name: name,
-          room: room
-    });
+   console.log("registerShare");
+   room = document.getElementById('roomShareName').value;
+   document.getElementById('joinShare').style.display = 'none';
+   document.getElementById('viewShare').style.display = 'block';
+   sendMessage({
+         id : 'joinShareRoom',
+         name: name,
+         room: room
+   });
 }
 function viewShare(){
-    console.log("viewShare");
-    room = document.getElementById('roomShareName').value;
-        document.getElementById('joinShare').style.display = 'none';
-        document.getElementById('viewShare').style.display = 'block';
-        sendMessage({
-              id : 'viewShareRoom',
-              name: name,
-              room: room
-        });
+   console.log("viewShare");
+   room = document.getElementById('roomShareName').value;
+       document.getElementById('joinShare').style.display = 'none';
+       document.getElementById('viewShare').style.display = 'block';
+       sendMessage({
+             id : 'viewShareRoom',
+             name: name,
+             room: room
+       });
 }
 function home() {
-    document.getElementById('call').style.display = 'none';
-    document.getElementById('index').style.display = 'none';
-    document.getElementById('join').style.display = 'none';
-    document.getElementById('home').style.display = 'block';
-    getListOnline();
-    getListRoom();
+   document.getElementById('call').style.display = 'none';
+   document.getElementById('index').style.display = 'none';
+   document.getElementById('join').style.display = 'none';
+   document.getElementById('home').style.display = 'block';
+   getListOnline();
+   getListRoom();
 }
 
 function call() {
-    document.getElementById('home').style.display = 'none';
-    document.getElementById('index').style.display = 'none';
-    document.getElementById('call').style.display = 'none';
-    document.getElementById('join').style.display = 'block';
+   document.getElementById('home').style.display = 'none';
+   document.getElementById('index').style.display = 'none';
+   document.getElementById('call').style.display = 'none';
+   document.getElementById('join').style.display = 'block';
 
 }
 function liveshare() {
-    document.getElementById('home').style.display = 'none';
-    document.getElementById('index').style.display = 'none';
-    document.getElementById('call').style.display = 'none';
-    document.getElementById('join').style.display = 'none';
-    document.getElementById('joinShare').style.display = 'block';
+   document.getElementById('home').style.display = 'none';
+   document.getElementById('index').style.display = 'none';
+   document.getElementById('call').style.display = 'none';
+   document.getElementById('join').style.display = 'none';
+   document.getElementById('joinShare').style.display = 'block';
 }
 
 function wall() {
-    alert("Chuc nang dang phat trien !!!");
+   alert("Chuc nang dang phat trien !!!");
 }
 
 function Logout() {
@@ -271,7 +274,7 @@ function Logout() {
 }
 
 function loginAlert() {
-    alert("Please, login!");
+   alert("Please, login!");
 }
 
 function onNewParticipant(request) {
@@ -296,31 +299,31 @@ function callResponse(message) {
 }
 
 function sendOverview(){
-    var constraints = {
-    		audio : false,
-    		video : {
-    			mandatory : {
-    				chromeMediaSource: 'screen'
-    			}
-    		}
-    	};
-    	console.log(name + " registered in room " + room);
-    	var participant = new View(name, 'overview');
-    	participants[name] = participant;
-    	video = participant.getVideoElement();
+   var constraints = {
+   		audio : false,
+   		video : {
+   			mandatory : {
+   				chromeMediaSource: 'screen'
+   			}
+   		}
+   	};
+   	console.log(name + " registered in room " + room);
+   	var participant = new View(name, 'overview');
+   	participants[name] = participant;
+   	video = participant.getVideoElement();
 
-    	var options = {
-    	      localVideo: video,
-    	      mediaConstraints: constraints,
-    	      onicecandidate: participant.onIceCandidate.bind(participant)
-    	    }
-    	participant.rtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerSendonly(options,
-    		function (error) {
-    		  if(error) {
-    			  return console.error(error);
-    		  }
-    		  this.generateOffer (participant.offerToReceiveVideo.bind(participant));
-    	});
+   	var options = {
+   	      localVideo: video,
+   	      mediaConstraints: constraints,
+   	      onicecandidate: participant.onIceCandidate.bind(participant)
+   	    }
+   	participant.rtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerSendonly(options,
+   		function (error) {
+   		  if(error) {
+   			  return console.error(error);
+   		  }
+   		  this.generateOffer (participant.offerToReceiveVideo.bind(participant));
+   	});
 }
 //gui video len
 function onExistingParticipants(msg) {
@@ -356,42 +359,42 @@ function onExistingParticipants(msg) {
 }
 
 function leaveRoom() {
-    x = document.getElementsByClassName('participant main');
-    c = x[0].id;
-    console.log(c);
+   x = document.getElementsByClassName('participant main');
+   c = x[0].id;
+   console.log(c);
 	sendMessage({
 		id : 'leaveRoom',
 		leaver: c,
 	    requester: name
 	});
-    getListRoom();
+   getListRoom();
 
 }
 function disableSound(){
 //
-    x = document.getElementsByClassName('participant main');
-    c = x[0].id;
-    sound = participants[c].getSound();
-    if(sound == true){
+   x = document.getElementsByClassName('participant main');
+   c = x[0].id;
+   sound = participants[c].getSound();
+   if(sound == true){
 //        document.getElementById('button-sound').value = "Enable Sound";
 //        participants[c].setSound(false);
-        sendMessage({
-            id : 'disableSound',
-           	disabler: c,
-           	requester: name
-        });
-        console.log("gui request");
-    }
-    if(sound == false){
+       sendMessage({
+           id : 'disableSound',
+          	disabler: c,
+          	requester: name
+       });
+       console.log("gui request");
+   }
+   if(sound == false){
 //        document.getElementById('button-sound').value = "Disable Sound";
 //        participants[c].setSound(true);
-        sendMessage({
-            id : 'enableSound',
-           	disabler: c,
-           	requester: name
-        });
-        console.log("gui request");
-    }
+       sendMessage({
+           id : 'enableSound',
+          	disabler: c,
+          	requester: name
+       });
+       console.log("gui request");
+   }
 //    console.log(c);
 
 
@@ -399,13 +402,13 @@ function disableSound(){
 
 function acceptJoin(userJoin){
 
-    sendMessage({
-       	id : 'acceptJoin',
-    	userAccept: userJoin,
-    	roomAccept: joinRoom
-    });
-    console.log("da gui mess");
-    document.getElementsByName(userJoin)[0].style.display='none';
+   sendMessage({
+      	id : 'acceptJoin',
+   	userAccept: userJoin,
+   	roomAccept: joinRoom
+   });
+   console.log("da gui mess");
+   document.getElementsByName(userJoin)[0].style.display='none';
 }
 
 function receiveVideo(sender) {
@@ -414,9 +417,9 @@ function receiveVideo(sender) {
 	var video = participant.getVideoElement();
 
 	var options = {
-      remoteVideo: video,
-      onicecandidate: participant.onIceCandidate.bind(participant)
-    }
+     remoteVideo: video,
+     onicecandidate: participant.onIceCandidate.bind(participant)
+   }
 
 	participant.rtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(options,
 			function (error) {
@@ -432,9 +435,9 @@ function receiveVideoNew(sender) {
 	var video = participant.getVideoElement();
 
 	var options = {
-      remoteVideo: video,
-      onicecandidate: participant.onIceCandidate.bind(participant)
-    }
+     remoteVideo: video,
+     onicecandidate: participant.onIceCandidate.bind(participant)
+   }
 
 	participant.rtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(options,
 			function (error) {
@@ -458,29 +461,28 @@ function sendMessage(message) {
 	ws.send(jsonMessage);
 }
 function nameButton(){
-    return "chiennv";
+   return "chiennv";
 }
-
+//dang lam
 //new function
 function getListOnline(){
-    sendMessage({
-           	id : 'getListOnline',
-           	requester: name
-    });
+   sendMessage({
+          	id : 'getListOnline',
+          	requester: name
+   });
 }
 
 function cancel(userJoin){
-    document.getElementsByName(userJoin)[0].style.display = 'none';
-    console.log(userJoin);
+   document.getElementsByName(userJoin)[0].style.display = 'none';
+   console.log(userJoin);
 }
 //new function
 function getListRoom(){
-    sendMessage({
-       	id : 'getListRoom',
-       	requester: name
-    });
+   sendMessage({
+      	id : 'getListRoom',
+      	requester: name
+   });
 }
-
 
 
 

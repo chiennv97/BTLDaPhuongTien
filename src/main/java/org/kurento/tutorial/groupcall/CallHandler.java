@@ -80,6 +80,10 @@ public class CallHandler extends TextWebSocketHandler {
                 listOnline.add(userName);
                 listSession.put(userName, session);
                 System.out.println("add session");
+                JsonObject loginMsg = new JsonObject();
+                loginMsg.addProperty("id","login" );
+                loginMsg.addProperty("name",userName);
+                sendMsg(listSession.get(userName),loginMsg);
                 break;
             case "joinRoom":
                 String nameRoom = jsonMessage.get("room").getAsString();
@@ -302,6 +306,9 @@ public class CallHandler extends TextWebSocketHandler {
                 String hostOfRoomMsgString = roomManager.getRoom(user.getName()).getHostRoom();
                 hostOfRoomMsg.addProperty("hostOfRoom", hostOfRoomMsgString);
                 user.sendMessage(hostOfRoomMsg);
+                break;
+            case "demo":
+                System.out.println("demo ok");
                 break;
             default:
                 break;
