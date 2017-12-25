@@ -27,6 +27,7 @@ ws.onmessage = function(message) {
 	    console.log("existingParticipants");
 		onExistingParticipants(parsedMessage);
 		break;
+	//dang lam
 	case 'sendOverview':
 	    sendOverview();
 	    break;
@@ -41,10 +42,12 @@ ws.onmessage = function(message) {
 	    console.log("participantLeft");
 		onParticipantLeft(parsedMessage);
 		break;
+	//dang lam
 	case 'receiveVideoAnswer':
 	    console.log("receiveVideoAnswer");
 		receiveVideoResponse(parsedMessage);
 		break;
+	//dang lam
 	case 'iceCandidate':
 	    console.log("iceCandidate");
 		participants[parsedMessage.name].rtcPeer.addIceCandidate(parsedMessage.candidate, function (error) {
@@ -219,6 +222,7 @@ function register() {
 //	getHostOfRoom();
    getListRoom();
 }
+//dang lam
 function registerShare(){
    console.log("registerShare");
    room = document.getElementById('roomShareName').value;
@@ -230,6 +234,7 @@ function registerShare(){
          room: room
    });
 }
+//dang lam
 function viewShare(){
    console.log("viewShare");
    room = document.getElementById('roomShareName').value;
@@ -280,7 +285,7 @@ function loginAlert() {
 function onNewParticipant(request) {
 	receiveVideoNew(request.name);
 }
-
+// dang lam
 function receiveVideoResponse(result) {
 	participants[result.name].rtcPeer.processAnswer (result.sdpAnswer, function (error) {
 		if (error) return console.error (error);
@@ -297,7 +302,7 @@ function callResponse(message) {
 		});
 	}
 }
-
+//dang lam
 function sendOverview(){
    var constraints = {
    		audio : false,
@@ -307,7 +312,7 @@ function sendOverview(){
    			}
    		}
    	};
-   	console.log(name + " registered in room " + room);
+   	// console.log(name + " registered in room " + room);
    	var participant = new View(name, 'overview');
    	participants[name] = participant;
    	video = participant.getVideoElement();
@@ -410,7 +415,7 @@ function acceptJoin(userJoin){
    console.log("da gui mess");
    document.getElementsByName(userJoin)[0].style.display='none';
 }
-
+//dang lam
 function receiveVideo(sender) {
 	var participant = new View(sender,'overview');
 	participants[sender] = participant;
@@ -427,7 +432,7 @@ function receiveVideo(sender) {
 				  return console.error(error);
 			  }
 			  this.generateOffer (participant.offerToReceiveVideo.bind(participant));
-	});;
+	});
 }
 function receiveVideoNew(sender) {
 	var participant = new Participant(sender,'participants');
@@ -454,7 +459,7 @@ function onParticipantLeft(request) {
 	participant.dispose();
 	delete participants[request.name];
 }
-
+//da xong
 function sendMessage(message) {
 	var jsonMessage = JSON.stringify(message);
 	console.log('Senging message: ' + jsonMessage);
@@ -463,7 +468,7 @@ function sendMessage(message) {
 function nameButton(){
    return "chiennv";
 }
-//dang lam
+//da xong
 //new function
 function getListOnline(){
    sendMessage({
