@@ -1,10 +1,11 @@
 var ws = new WebSocket('wss://' + location.host + '/groupcall');
-window.onbeforeunload = function() {
+window.onbeforeunload = function () {
     console.log("close ws");
     ws.close();
 };
-var app = angular.module("main", ["ngRoute"]);
-app.factory("user",function(){
+
+var app = angular.module("main", ["ngRoute", "login", "header"]);
+app.factory("user", function () {
     return {};
 });
 app.service('mainService', function ($rootScope) {
@@ -14,14 +15,14 @@ app.service('mainService', function ($rootScope) {
     var participants = {};
     var video;
     var name;
-//new var
+    //new var
     var listOnline;
-//new var
+    //new var
     var listRoom = 0;
-//new var
+    //new var
     var hostOfRoom;
     var self = this;
-    ws.onmessage = function(message) {
+    ws.onmessage = function (message) {
         var parsedMessage = JSON.parse(message.data);
         console.info('Received message: ' + message.data);
         switch (parsedMessage.id) {
@@ -48,7 +49,7 @@ app.service('mainService', function ($rootScope) {
             case 'getListOnline':
                 console.log("change");
                 listOnline = parsedMessage.listOnline;
-                $rootScope.$broadcast('updateListOnline', { message: "update" });
+                $rootScope.$broadcast('updateListOnline', {message: "update"});
                 break;
             case 'viewShare':
                 parsedMessage.data.forEach(self.receiveVideo);
@@ -65,18 +66,18 @@ app.service('mainService', function ($rootScope) {
         }
     };
     this.sendMessage = function (message) {
-            var jsonMessage = JSON.stringify(message);
-            console.log('Senging message: ' + jsonMessage);
-            ws.send(jsonMessage);
+        var jsonMessage = JSON.stringify(message);
+        console.log('Senging message: ' + jsonMessage);
+        ws.send(jsonMessage);
     };
     this.getListOnline = function () {
-            return listOnline;
+        return listOnline;
     };
     this.sendOverview = function () {
         var constraints = {
-            audio : false,
-            video : {
-                mandatory : {
+            audio: false,
+            video: {
+                mandatory: {
                     chromeMediaSource: 'screen'
                 }
             }
@@ -93,19 +94,19 @@ app.service('mainService', function ($rootScope) {
         };
         participant.rtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerSendonly(options,
             function (error) {
-                if(error) {
+                if (error) {
                     return console.error(error);
                 }
-                this.generateOffer (participant.offerToReceiveVideo.bind(participant));
+                this.generateOffer(participant.offerToReceiveVideo.bind(participant));
             });
     };
     this.receiveVideoResponse = function (result) {
-        participants[result.name].rtcPeer.processAnswer (result.sdpAnswer, function (error) {
-            if (error) return console.error (error);
+        participants[result.name].rtcPeer.processAnswer(result.sdpAnswer, function (error) {
+            if (error) return console.error(error);
         });
     };
     this.receiveVideo = function (sender) {
-        var participant = new View(sender,'overview');
+        var participant = new View(sender, 'overview');
         participants[sender] = participant;
         var video = participant.getVideoElement();
 
@@ -116,81 +117,49 @@ app.service('mainService', function ($rootScope) {
 
         participant.rtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(options,
             function (error) {
-                if(error) {
+                if (error) {
                     return console.error(error);
                 }
-                this.generateOffer (participant.offerToReceiveVideo.bind(participant));
+                this.generateOffer(participant.offerToReceiveVideo.bind(participant));
             });
     }
 });
-app.config(function($routeProvider) {
+app.config(function ($routeProvider) {
     $routeProvider
         .when("/", {
-            templateUrl : "./components/login.html",
+            templateUrl: "./components/login.html",
             controller: 'loginController'
         })
         .when("/home", {
-            templateUrl : "./components/home.html",
+            templateUrl: "./components/home.html",
             controller: 'homeController'
         })
         .when("/joinshare", {
-            templateUrl : "./components/joinshare.html",
+            templateUrl: "./components/joinshare.html",
             controller: 'joinshareController'
         })
         .when("/viewshare", {
-            templateUrl : "./components/viewshare.html",
+            templateUrl: "./components/viewshare.html",
             controller: 'viewshareController'
         })
         .otherwise({
             redirectTo: "/"
         });
 });
-//header
-app.component('header',{
-    templateUrl: './components/header.html',
-    controller: 'headerController'
-});
-app.controller('headerController',function ($scope,user, $location) {
-    $scope.user = user;
-    $scope.user.name = 'Đăng Nhập';
-    $scope.joinShare = function () {
-        $location.path('/joinshare');
-    }
-});
-
-//login
-app.controller("loginController", function ($scope,user, $location, mainService) {
-    $scope.user = user;
-    $scope.login = function () {
-        $scope.user.name = $scope.name;
-        // console.log($scope.name);
-        var message = {
-            id: 'login',
-            name: $scope.name,
-        };
-        mainService.sendMessage(message);
-        mainService.sendMessage({
-            id : 'getListOnline',
-            requester: $scope.name
-        });
-
-        $location.path('/home');
-    }
-});
 
 //home
-app.controller("homeController", function ($scope,user, mainService) {
+app.controller("homeController", function ($scope, user, mainService) {
     $scope.user = user;
     $scope.mainService = mainService;
     $scope.listOnline = mainService.getListOnline();
-    $scope.$on('updateListOnline', function(event, args){
+    $scope.$on('updateListOnline', function (event, args) {
         $scope.listOnline = mainService.getListOnline();
         $scope.$digest()
     });
 });
 
 //joinshare
-app.controller('joinshareController', function ($scope,user,mainService, $location) {
+app.controller('joinshareController', function ($scope, user, mainService, $location) {
     $scope.user = user;
     $scope.registerShare = function () {
         var message = {
@@ -212,7 +181,7 @@ app.controller('joinshareController', function ($scope,user,mainService, $locati
     }
 });
 
-app.controller('viewshareController', function ($scope,user,mainService) {
+app.controller('viewshareController', function ($scope, user, mainService) {
     $scope.user = user;
 
 });

@@ -1,9 +1,13 @@
-(function(angular) {
-    'use strict';
-    angular.module('app').component('header', {
+//header
+angular.module("header", [])
+    .component('header', {
         templateUrl: './components/header.html',
-        bindings: {
-            name: '='
+        controller: 'headerController'
+    })
+    .controller('headerController', function ($scope, user, $location) {
+        $scope.user = user;
+        $scope.user.name = 'Đăng Nhập';
+        $scope.joinShare = function () {
+            $location.path('/joinshare');
         }
     });
-})(window.angular);

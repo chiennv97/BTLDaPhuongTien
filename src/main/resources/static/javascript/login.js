@@ -1,30 +1,21 @@
-(function(angular) {
-    'use strict';
-    angular.module('app')
-        .component('login', {
-            templateUrl: './components/login.html',
-            controller: function($scope) {
-                var self = this;
-                $scope.setView = function() {
-                    var message = {
-                        id: 'login',
-                        name: $scope.name,
-                    };
-                    var jsonMessage = JSON.stringify(message);
-                    console.log('Senging message: ' + jsonMessage);
-                    ws.send(jsonMessage);
-                    self.view = $scope.name;
-                    self.hide = true;
-                    self.onViewChange({$event: {view: $scope.name}});
-                    self.onHideChange({$event: {hide: true}});
+//login
+angular.module("login", [])
+    .controller("loginController", function ($scope, user, $location, mainService) {
+        $scope.user = user;
+        $scope.login = function () {
+            $scope.user.name = $scope.name;
+            // console.log($scope.name);
+            var message = {
+                id: 'login',
+                name: $scope.name,
+            };
+            mainService.sendMessage(message);
+            mainService.sendMessage({
+                id: 'getListOnline',
+                requester: $scope.name
+            });
 
-                }
-            },
-            bindings: {
-                view: '<',
-                hide: '<',
-                onViewChange: '&',
-                onHideChange: '&'
-            }
-        });
-})(window.angular);
+            $location.path('/home');
+        }
+    });
+
